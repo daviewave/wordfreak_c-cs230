@@ -1,0 +1,18 @@
+# Build products
+build/
+dist/
+*.o
+*.d
+wordfreak
+
+# The program's own output file
+output.txt
+
+# Core dumps and editor files
+core
+core.*
+*.swp
+*.swo
+*~
+.vscode/
+.idea/

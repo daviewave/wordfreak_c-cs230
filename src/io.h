@@ -9,9 +9,9 @@
 
 /* Output buffer in front of one file descriptor. */
 typedef struct {
-    int fd;
-    char data[IO_CHUNK_SIZE];
-    size_t length;
+    int fd;                   /* destination descriptor */
+    char data[IO_CHUNK_SIZE]; /* bytes waiting to be written */
+    size_t length;            /* bytes buffered and not yet written */
 } Writer;
 
 int io_open_for_reading(const char *path);

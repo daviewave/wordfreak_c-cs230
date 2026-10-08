@@ -9,8 +9,11 @@
 #   dist   flat Gradescope bundle in dist/, proven to build
 #   clean  remove build/, dist/ and output.txt
 
-# The compiler can be overridden: make CC=clang
-CC ?= gcc
+# The compiler can be overridden: make CC=clang. GNU make predefines CC=cc,
+# so `CC ?= gcc` would never take effect; only make's own default is replaced.
+ifeq ($(origin CC),default)
+CC = gcc
+endif
 
 # Language level. The spec's course machine builds with gcc -std=c99, and
 # open/read/write/close are POSIX, which strict C99 hides without the

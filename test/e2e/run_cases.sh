@@ -2,7 +2,8 @@
 # Runs every test/e2e/cases/<name>.cmd in a scratch copy of the cases
 # directory and compares the resulting output.txt with <name>.expected.
 # Optional <name>.stderr holds a grep -E pattern the error output must
-# contain; optional <name>.status holds the expected exit status (default 0).
+# contain; optional <name>.status holds the expected exit status (default 0);
+# a case without <name>.expected asserts that no output.txt was written.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -48,6 +49,10 @@ expected_status_of() {
 
 output_differs() {
     local name="$1" scratch="$2"
+    if [ ! -f "$CASES_DIR/$name.expected" ]; then
+        [ -e "$scratch/output.txt" ] && echo "output.txt exists" > "$scratch/diff.log"
+        return
+    fi
     ! diff -u "$CASES_DIR/$name.expected" "$scratch/output.txt" > "$scratch/diff.log" 2>&1
 }
 

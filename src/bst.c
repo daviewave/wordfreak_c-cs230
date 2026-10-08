@@ -49,8 +49,15 @@ int bst_insert(BstNode **root, const char *word) {
 
 /* Returns the node for word, or NULL when it is not in the tree. */
 const BstNode *bst_find(const BstNode *root, const char *word) {
-    BstNode *mutable_root = (BstNode *)root;
-    return *find_link(&mutable_root, word);
+    const BstNode *node = root;
+    while (node != NULL) {
+        int order = strcmp(word, node->word);
+        if (order == 0) {
+            return node;
+        }
+        node = order < 0 ? node->left : node->right;
+    }
+    return NULL;
 }
 
 /* Visits every node in sorted order. Returns 0, or the visitor's first

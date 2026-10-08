@@ -63,6 +63,8 @@ static int emit_pending_word(Tokenizer *tokenizer, WordVisitor visit, void *cont
 }
 
 /* Consumes one chunk of input, delivering every word that ends inside it.
+ * A word cut by the chunk boundary stays in tokenizer->data until the next
+ * chunk or finish completes it (docs/design.md section 5.2).
  * @return 0, the visitor's first non-zero result, or -1 on allocation failure. */
 int tokenizer_feed(Tokenizer *tokenizer, const unsigned char *bytes, size_t count,
                    WordVisitor visit, void *context) {

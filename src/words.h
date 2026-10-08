@@ -9,9 +9,9 @@ typedef int (*WordVisitor)(const char *word, size_t length, void *context);
 
 /* The partially assembled word carried between chunks. */
 typedef struct {
-    char *data;
-    size_t length;
-    size_t capacity;
+    char *data;               /* letters of the word being assembled, lowercased */
+    size_t length;            /* letters stored so far; 0 between words */
+    size_t capacity;          /* bytes allocated for data; doubles when full */
 } Tokenizer;
 
 int words_is_letter(int byte);

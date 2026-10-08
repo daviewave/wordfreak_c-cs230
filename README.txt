@@ -121,12 +121,14 @@ Design notes
 ------------
 - Words: a byte is a letter only if it is 'A'..'Z' or 'a'..'z'; every other
   byte, including digits, apostrophes and UTF-8 bytes, separates words. So
-  "Isn't that a POT4TO???" yields a, isn, pot, t, that, to, as the spec shows.
+  "Isn’t that a POT4TO???" yields a, isn, pot, t, that, to, as the spec shows.
 - Chunk boundaries: the tokenizer keeps the partial word in its own buffer
   between read() calls, so a word straddling two 4096-byte chunks is counted
   once (test/unit/test_words.c and the long_input e2e case prove it).
 - The trees are not balanced (the spec says that is fine). Insertion is
-  iterative so sorted input cannot overflow the stack.
+  iterative so sorted input cannot overflow the stack. Ordinary text is
+  instant; the slow case is a sorted dictionary of distinct words, which
+  degenerates each tree into a list.
 - Output: output.txt is opened O_WRONLY|O_CREAT|O_TRUNC with mode 0644, so it
   is created if absent, emptied if present, and readable. Empty input gives
   an empty output.txt.
@@ -139,7 +141,8 @@ Design notes
 Tests: `make test` runs unit tests for every module (test/unit/) and
 end-to-end cases (test/e2e/cases/) covering stdin piped, stdin typed (a
 here-string), argument files, the environment file, all at once, a missing
-file, a directory as argument, empty input, the spec's "Isn't that a
-POT4TO???" example and an input longer than one read chunk.
+file, a directory as argument, empty input, an unwritable output directory
+(exit 1), the spec's "Isn’t that a POT4TO???" example and an input longer
+than one read chunk.
 
 Video: <VIDEO URL TO BE ADDED>

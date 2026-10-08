@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +16,8 @@
 #define STDIN_DESCRIPTOR 0
 #define STDERR_DESCRIPTOR 2
 /* Room for "wordfreak: <action> '<path>': <strerror>\n" with a PATH_MAX path. */
-#define MESSAGE_CAPACITY 4352
+#define MESSAGE_PREFIX_CAPACITY 256
+#define MESSAGE_CAPACITY (PATH_MAX + MESSAGE_PREFIX_CAPACITY)
 
 /* Writes "wordfreak: <action> '<subject>': <strerror(errno)>\n" to fd 2. */
 static void report_failure(const char *action, const char *subject) {
@@ -105,6 +107,18 @@ static int count_all_inputs(int argc, char **argv, Tokenizer *tokenizer, WordTab
     return count_environment_file(tokenizer, table);
 }
 
+/* Writes the table through a buffered writer on fd and flushes it.
+ * @return 0, or -1 after reporting the failure. */
+static int write_table_to_descriptor(const WordTable *table, int fd) {
+    Writer writer;
+    writer_init(&writer, fd);
+    if (output_write_table(table, &writer) == -1 || writer_flush(&writer) == -1) {
+        report_failure("cannot write", OUTPUT_FILE_NAME);
+        return -1;
+    }
+    return 0;
+}
+
 /* Creates or truncates output.txt and writes the table into it.
  * @return 0, or -1 after reporting the failure. */
 static int write_output_file(const WordTable *table) {
@@ -113,17 +127,10 @@ static int write_output_file(const WordTable *table) {
         report_failure("cannot create", OUTPUT_FILE_NAME);
         return -1;
     }
-    Writer writer;
-    writer_init(&writer, fd);
-    int result = output_write_table(table, &writer);
-    if (result == 0) {
-        result = writer_flush(&writer);
-    }
+    int result = write_table_to_descriptor(table, fd);
     if (io_close(fd) == -1) {
+        report_failure("cannot close", OUTPUT_FILE_NAME);
         result = -1;
-    }
-    if (result == -1) {
-        report_failure("cannot write", OUTPUT_FILE_NAME);
     }
     return result;
 }

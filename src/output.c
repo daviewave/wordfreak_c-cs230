@@ -9,10 +9,10 @@
 
 /* What one output line carries while the table is being written. */
 typedef struct {
-    Writer *writer;
-    const ColumnWidths *widths;
-    char *line;
-    size_t capacity;
+    Writer *writer;             /* where finished lines go */
+    const ColumnWidths *widths; /* column widths every line is padded to */
+    char *line;                 /* scratch buffer one formatted line is built in */
+    size_t capacity;            /* bytes allocated for line */
 } LineSink;
 
 /* Number of decimal digits needed to print value (0 needs one). */

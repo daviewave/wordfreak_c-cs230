@@ -5,10 +5,10 @@
 
 /* One distinct word and how many times it was seen. */
 typedef struct BstNode {
-    char *word;
-    unsigned long count;
-    struct BstNode *left;
-    struct BstNode *right;
+    char *word;               /* heap copy, lowercase, NUL-terminated; owned by the node */
+    unsigned long count;      /* occurrences across every input */
+    struct BstNode *left;     /* words that sort before this one */
+    struct BstNode *right;    /* words that sort after this one */
 } BstNode;
 
 /* Called once per node in sorted order. Returns 0 to continue. */

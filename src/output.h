@@ -7,8 +7,8 @@
 
 /* Column widths that make every colon line up. */
 typedef struct {
-    size_t longest_word;
-    size_t widest_count;
+    size_t longest_word;      /* letters in the longest word: the word column width */
+    size_t widest_count;      /* digits in the largest count: the count column width */
 } ColumnWidths;
 
 size_t output_digit_count(unsigned long value);

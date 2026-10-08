@@ -77,7 +77,7 @@ int writer_flush(Writer *writer) {
 }
 
 /* Appends bytes to the buffer, flushing when it fills; a block larger than
- * the buffer bypasses it. Returns 0 or -1. */
+ * the buffer bypasses it (docs/design.md section 5.5). Returns 0 or -1. */
 int writer_put(Writer *writer, const char *bytes, size_t count) {
     if (count > IO_CHUNK_SIZE - writer->length) {
         if (writer_flush(writer) == -1) {

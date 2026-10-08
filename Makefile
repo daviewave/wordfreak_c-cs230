@@ -93,7 +93,10 @@ dist: $(SOURCES) $(HEADERS) README.txt
 	cp $(SOURCES) $(HEADERS) README.txt $(DIST_DIR)/
 	printf '%s\n' \
 	    '# wordfreak: builds the executable "wordfreak" in place.' \
-	    'CC ?= gcc' \
+	    '# GNU make predefines CC=cc, so only its default is replaced by gcc.' \
+	    'ifeq ($$(origin CC),default)' \
+	    'CC = gcc' \
+	    'endif' \
 	    'CFLAGS ?= -std=c99 -D_POSIX_C_SOURCE=200809L -O2 -Wall -Wextra -Wpedantic' \
 	    'SOURCES := $$(wildcard *.c)' \
 	    'OBJECTS := $$(SOURCES:.c=.o)' \

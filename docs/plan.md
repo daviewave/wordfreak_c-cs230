@@ -64,7 +64,7 @@ Unit tests compile with the same warning set, so every test function must be `st
 - Consumes: nothing.
 - Produces: everything in `docs/design.md` section 4 "io.h": `IO_CHUNK_SIZE`, `Writer`, `io_open_for_reading`, `io_open_output_file`, `io_close`, `io_read_chunk`, `io_write_all`, `io_write_string`, `writer_init`, `writer_put`, `writer_flush`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `test/unit/test_io.c`:
 
@@ -126,7 +126,7 @@ static void test_open_output_file_truncates_and_sets_mode(void) {
     CHECK_EQ_INT(info.st_size, 0);
     unlink(path);
 
-    char fresh[4096];
+    char fresh[sizeof path + sizeof ".fresh"];
     snprintf(fresh, sizeof fresh, "%s.fresh", path);
     umask(0);
     out = io_open_output_file(fresh);
@@ -211,12 +211,12 @@ int main(void) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `make test`
 Expected: FAIL (the compile of `test_io` fails with "io.h: No such file").
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 `src/io.h`:
 
@@ -349,12 +349,12 @@ int writer_put(Writer *writer, const char *bytes, size_t count) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `make test`
 Expected: `PASS test_io` with 0 failures; `make check` clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/io.h src/io.c test/unit/test_io.c
@@ -373,7 +373,7 @@ git commit -m "feat: add io module wrapping open, read, write and close"
 - Consumes: nothing.
 - Produces: `WordVisitor`, `Tokenizer`, `words_is_letter`, `words_to_lower`, `tokenizer_init`, `tokenizer_feed`, `tokenizer_finish`, `tokenizer_free` as in `docs/design.md` section 4 "words.h".
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `test/unit/test_words.c`:
 
@@ -455,8 +455,7 @@ static void test_word_across_exact_chunk_boundary(void) {
     text[sizeof text - 1] = '\0';
     Collector collector;
     feed_in_slices(text, 4096, &collector);
-    CHECK_EQ_STR(collector.joined, "straddlin");
-    text[sizeof text - 1] = 'g';
+    CHECK_EQ_STR(collector.joined, "straddling");
     Tokenizer tokenizer;
     CHECK_EQ_INT(tokenizer_init(&tokenizer), 0);
     memset(&collector, 0, sizeof collector);
@@ -527,12 +526,12 @@ int main(void) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `make test`
 Expected: FAIL compiling `test_words` ("words.h: No such file").
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 `src/words.h`:
 
@@ -661,12 +660,12 @@ void tokenizer_free(Tokenizer *tokenizer) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `make test`
 Expected: `PASS test_words`; `make check` clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/words.h src/words.c test/unit/test_words.c
@@ -685,7 +684,7 @@ git commit -m "feat: add tokenizer that assembles words across read chunks"
 - Consumes: nothing.
 - Produces: `BstNode`, `BstVisitor`, `bst_insert`, `bst_find`, `bst_visit_in_order`, `bst_size`, `bst_free` as in `docs/design.md` section 4 "bst.h".
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `test/unit/test_bst.c`:
 
@@ -802,12 +801,12 @@ int main(void) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `make test`
 Expected: FAIL compiling `test_bst`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 `src/bst.h`:
 
@@ -932,12 +931,12 @@ void bst_free(BstNode *root) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `make test`
 Expected: `PASS test_bst`; `make check` clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/bst.h src/bst.c test/unit/test_bst.c
@@ -956,7 +955,7 @@ git commit -m "feat: add binary search tree with insert-or-increment and in-orde
 - Consumes: `bst.h` (`BstNode`, `BstVisitor`, `bst_insert`, `bst_visit_in_order`, `bst_free`).
 - Produces: `TABLE_LETTER_COUNT`, `WordTable`, `table_init`, `table_hash`, `table_add`, `table_visit_in_order`, `table_free` as in `docs/design.md` section 4 "table.h".
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `test/unit/test_table.c`:
 
@@ -1059,12 +1058,12 @@ int main(void) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `make test`
 Expected: FAIL compiling `test_table`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 `src/table.h`:
 
@@ -1147,12 +1146,12 @@ void table_free(WordTable *table) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `make test`
 Expected: `PASS test_table`; `make check` clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/table.h src/table.c test/unit/test_table.c
@@ -1171,7 +1170,7 @@ git commit -m "feat: add 26-tree word table keyed by first letter"
 - Consumes: `table.h` (`WordTable`, `table_visit_in_order`, `BstNode`), `io.h` (`Writer`, `writer_put`).
 - Produces: `ColumnWidths`, `output_digit_count`, `output_measure`, `output_format_line`, `output_write_table` as in `docs/design.md` section 4 "output.h".
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `test/unit/test_output.c`:
 
@@ -1320,12 +1319,12 @@ int main(void) {
 }
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `make test`
 Expected: FAIL compiling `test_output`.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 `src/output.h`:
 
@@ -1447,12 +1446,12 @@ int output_write_table(const WordTable *table, Writer *writer) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `make test`
 Expected: `PASS test_output`; `make check` clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/output.h src/output.c test/unit/test_output.c
@@ -1470,7 +1469,7 @@ git commit -m "feat: add aligned output formatting for the word table"
 - Consumes: every header from Tasks 1-5.
 - Produces: the `wordfreak` binary's behaviour.
 
-- [ ] **Step 1: Write the failing e2e tests**
+- [x] **Step 1: Write the failing e2e tests**
 
 `test/e2e/run_cases.sh` (bash, `set -euo pipefail`): for every `test/e2e/cases/<name>.cmd`, create a fresh scratch directory under `$TMPDIR`, copy `test/e2e/cases/*.txt` into it, `cd` there, run the command line from the `.cmd` file with `WORDFREAK` set to the absolute path of `build/wordfreak` under `timeout 10`, then `diff` `output.txt` against `test/e2e/cases/<name>.expected`; if `<name>.stderr` exists, `grep -q -f` that pattern file in the captured stderr; if `<name>.status` exists, compare the exit status with its content (default 0). Print `PASS <name>` / `FAIL <name>` and exit non-zero on any failure.
 
@@ -1500,12 +1499,12 @@ Compute every `.expected` by hand from the sample texts (not by running the prog
 
 `test/e2e/no_stdio.sh`: `grep -Ewn 'printf|fprintf|vprintf|vfprintf|dprintf|puts|fputs|putchar|putc|fputc|fopen|fdopen|freopen|fclose|fgets|gets|getc|fgetc|getchar|fread|fwrite|fflush|fseek|ftell|rewind|perror|scanf|fscanf|sscanf' src/` must find nothing (`-w` keeps `snprintf` from matching `printf`); also `grep -rn 'stdin\|stdout\|stderr' src/` must find nothing (fd numbers 0/1/2 are used instead). Exit non-zero when a match is found and print it.
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `make test`
 Expected: the e2e cases FAIL because `build/wordfreak` does not exist (the build itself fails with no `main`).
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 `src/main.c`:
 
@@ -1652,12 +1651,12 @@ int main(int argc, char **argv) {
 
 Note on `tokenizer_feed` returning non-zero: `table_add` returns `-1` only when memory is exhausted (the tokeniser never emits a word that fails `is_hashable`), so a non-zero result from the feed is a fatal allocation failure; `main` reports via `report_failure("cannot allocate", ...)` where that path is reachable (add one `report_failure` call in `read_words_from_descriptor` for the feed failure branch, with `errno` set by `malloc`).
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `make clean && make && make check && make test`
 Expected: every unit test and e2e case prints `PASS`; `make check` clean. Also run `make dist` and confirm `dist/wordfreak` exists.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/main.c test/e2e
@@ -1671,20 +1670,20 @@ git commit -m "feat: add wordfreak entry point and end-to-end tests"
 **Files:**
 - Modify: `README.txt`
 
-- [ ] **Step 1: Run the gate**
+- [x] **Step 1: Run the gate**
 
 Run: `make clean && make && make check && make test && make dist`
 Expected: all succeed.
 
-- [ ] **Step 2: Independent review**
+- [x] **Step 2: Independent review**
 
 A reviewer who has read `docs/spec.md` reads every file in `src/` and lists every unmet rubric item, and greps `src/` for stdio I/O calls. Fix each finding, re-run the gate.
 
-- [ ] **Step 3: Finish README.txt**
+- [x] **Step 3: Finish README.txt**
 
 Sections, in order: overview paragraph; build and run (`make`, `./build/wordfreak`, the four input styles from the spec); "Requirements map" with one line per rubric bullet naming file and function (BSTs: `src/bst.c`; hash function: `src/table.c:table_hash`; syscalls: `src/io.c`; stdin/argv/env: `src/main.c:count_all_inputs`; format: `src/output.c:output_format_line`; error checking: `src/main.c:count_file`, `report_failure`; globals: none); design notes; `Video: <VIDEO URL TO BE ADDED>`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add README.txt

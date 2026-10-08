@@ -1,0 +1,1 @@
+cat fable.txt | "$WORDFREAK"
